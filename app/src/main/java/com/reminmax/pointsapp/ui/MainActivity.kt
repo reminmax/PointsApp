@@ -1,4 +1,4 @@
-package com.reminmax.pointsapp
+package com.reminmax.pointsapp.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
