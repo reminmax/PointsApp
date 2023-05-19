@@ -1,7 +1,7 @@
 package com.reminmax.pointsapp.di
 
 import android.content.Context
-import com.reminmax.pointsapp.common.AndroidResourceProvider
+import com.reminmax.pointsapp.common.helpers.AndroidResourceProvider
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import dagger.Module
 import dagger.Provides

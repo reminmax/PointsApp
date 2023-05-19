@@ -1,4 +1,4 @@
-package com.reminmax.pointsapp.common
+package com.reminmax.pointsapp.common.helpers
 
 import android.content.Context
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
