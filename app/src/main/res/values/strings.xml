@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">PointsApp</string>
+
+    <string name="homeScreenInfo">Введите количество точек и нажмите кнопку Поехали</string>
+
+    <string name="enterPointCount">Введите количество точек</string>
+    <string name="clearTextField">Очистить поле ввода</string>
+    <string name="pointCountPlaceholder">10</string>
+    <string name="goButtonLabel">Поехали!</string>
+
+    <string name="goBack">Назад</string>
+    <string name="chartScreenHeader">График</string>
+
 </resources>
