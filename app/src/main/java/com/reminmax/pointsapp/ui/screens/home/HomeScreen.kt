@@ -38,7 +38,9 @@ fun HomeRoute(
         onPointCountValueCleared = viewModel::onPointCountValueCleared,
         isLoading = uiState.isLoading,
         onNavigateToChartScreen = onNavigateToChartScreen,
+        onGetPoints = viewModel::getPoints,
         isPointCountValueValid = uiState.isPointCountValueValid,
+        errorMessage = uiState.errorMessage,
         modifier = Modifier,
     )
 }
@@ -50,8 +52,10 @@ fun HomeScreen(
     onPointCountValueChanged: (String) -> Unit,
     onPointCountValueCleared: () -> Unit,
     onNavigateToChartScreen: () -> Unit,
+    onGetPoints: () -> Unit,
     isPointCountValueValid: Boolean,
     isLoading: Boolean,
+    errorMessage: String?,
     modifier: Modifier = Modifier,
 ) {
     val scaffoldState = rememberScaffoldState()
@@ -64,8 +68,10 @@ fun HomeScreen(
             pointCount = pointCount,
             onPointCountValueChanged = onPointCountValueChanged,
             onPointCountValueCleared = onPointCountValueCleared,
+            onGetPoints = onGetPoints,
             onNavigateToChartScreen = onNavigateToChartScreen,
             isPointCountValueValid = isPointCountValueValid,
+            errorMessage = errorMessage,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -77,7 +83,9 @@ fun HomeScreenContent(
     isPointCountValueValid: Boolean,
     onPointCountValueChanged: (String) -> Unit,
     onPointCountValueCleared: () -> Unit,
+    onGetPoints: () -> Unit,
     onNavigateToChartScreen: () -> Unit,
+    errorMessage: String?,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -98,11 +106,12 @@ fun HomeScreenContent(
             onValueChange = onPointCountValueChanged,
             onClearValue = onPointCountValueCleared,
             onDone = {},
-            errorMessage = null,
+            errorMessage = errorMessage,
             modifier = Modifier.padding(top = MaterialTheme.spacing.large)
         )
         Button(
-            onClick = onNavigateToChartScreen,
+            //onClick = onNavigateToChartScreen,
+            onClick = onGetPoints,
             shape = MaterialTheme.shapes.small,
             modifier = modifier
                 .fillMaxWidth()
@@ -133,6 +142,8 @@ fun HomeScreenPreview() {
             pointCount = "10",
             onPointCountValueChanged = {},
             onPointCountValueCleared = {},
+            onGetPoints = {},
+            errorMessage = ""
         )
     }
 }

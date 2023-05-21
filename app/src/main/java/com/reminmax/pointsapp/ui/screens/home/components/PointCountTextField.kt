@@ -1,5 +1,6 @@
 package com.reminmax.pointsapp.ui.screens.home.components
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.text.KeyboardActions
@@ -39,42 +40,51 @@ fun PointCountTextField(
         }
     }
 
-    OutlinedTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = MaterialTheme.dimensions.minTextFieldHeight),
-        //textStyle =,
-        label = {
+    Column {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = modifier
+                .fillMaxWidth()
+                .heightIn(min = MaterialTheme.dimensions.minTextFieldHeight),
+            //textStyle =,
+            label = {
+                Text(
+                    text = stringResource(R.string.enterPointCount),
+                    style = MaterialTheme.typography.body1
+                )
+            },
+            placeholder = {
+                Text(
+                    text = stringResource(R.string.pointCountPlaceholder),
+                    style = MaterialTheme.typography.body1
+                )
+            },
+            trailingIcon = if (value.isNotBlank()) trailingIconView else null,
+            isError = !errorMessage.isNullOrEmpty(),
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done,
+                autoCorrect = false
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { onDone() }
+            ),
+            singleLine = true,
+            shape = MaterialTheme.shapes.small,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.primary,
+                unfocusedBorderColor = Color(0xFFDADADA),
+                cursorColor = MaterialTheme.colors.primary
+            ),
+        )
+        errorMessage?.let {
             Text(
-                text = stringResource(R.string.enterPointCount),
-                style = MaterialTheme.typography.body1
+                text = it,
+                color = MaterialTheme.colors.error,
+                style = MaterialTheme.typography.caption,
+                maxLines = 1
             )
-        },
-        placeholder = {
-            Text(
-                text = stringResource(R.string.pointCountPlaceholder),
-                style = MaterialTheme.typography.body1
-            )
-        },
-        trailingIcon = if (value.isNotBlank()) trailingIconView else null,
-        isError = !errorMessage.isNullOrEmpty(),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Done,
-            autoCorrect = false
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = { onDone() }
-        ),
-        singleLine = true,
-        shape = MaterialTheme.shapes.small,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = MaterialTheme.colors.primary,
-            unfocusedBorderColor = Color(0xFFDADADA),
-            cursorColor = MaterialTheme.colors.primary
-        ),
-
-    )
+        }
+    }
 }
