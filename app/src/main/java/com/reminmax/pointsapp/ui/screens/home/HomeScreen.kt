@@ -39,8 +39,8 @@ fun HomeRoute(
         isLoading = uiState.isLoading,
         onNavigateToChartScreen = onNavigateToChartScreen,
         onGetPoints = viewModel::getPoints,
-        isPointCountValueValid = uiState.isPointCountValueValid,
-        errorMessage = uiState.errorMessage,
+        isGoButtonAvailable = uiState.isGoButtonAvailable,
+        errorMessage = uiState.pointCountError,
         modifier = Modifier,
     )
 }
@@ -53,7 +53,7 @@ fun HomeScreen(
     onPointCountValueCleared: () -> Unit,
     onNavigateToChartScreen: () -> Unit,
     onGetPoints: () -> Unit,
-    isPointCountValueValid: Boolean,
+    isGoButtonAvailable: Boolean,
     isLoading: Boolean,
     errorMessage: String?,
     modifier: Modifier = Modifier,
@@ -70,7 +70,7 @@ fun HomeScreen(
             onPointCountValueCleared = onPointCountValueCleared,
             onGetPoints = onGetPoints,
             onNavigateToChartScreen = onNavigateToChartScreen,
-            isPointCountValueValid = isPointCountValueValid,
+            isGoButtonAvailable = isGoButtonAvailable,
             errorMessage = errorMessage,
             modifier = Modifier.padding(innerPadding),
         )
@@ -80,7 +80,7 @@ fun HomeScreen(
 @Composable
 fun HomeScreenContent(
     pointCount: String,
-    isPointCountValueValid: Boolean,
+    isGoButtonAvailable: Boolean,
     onPointCountValueChanged: (String) -> Unit,
     onPointCountValueCleared: () -> Unit,
     onGetPoints: () -> Unit,
@@ -120,7 +120,7 @@ fun HomeScreenContent(
                 backgroundColor = MaterialTheme.colors.secondary,
                 contentColor = MaterialTheme.colors.onPrimary,
             ),
-            enabled = isPointCountValueValid
+            enabled = isGoButtonAvailable
         ) {
             Text(
                 text = stringResource(id = R.string.goButtonLabel),
@@ -138,7 +138,7 @@ fun HomeScreenPreview() {
             snackBarHostState = SnackbarHostState(),
             isLoading = false,
             onNavigateToChartScreen = {},
-            isPointCountValueValid = false,
+            isGoButtonAvailable = false,
             pointCount = "10",
             onPointCountValueChanged = {},
             onPointCountValueCleared = {},

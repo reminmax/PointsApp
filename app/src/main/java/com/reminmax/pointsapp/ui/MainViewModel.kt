@@ -7,6 +7,7 @@ import com.reminmax.pointsapp.data.SResult
 import com.reminmax.pointsapp.di.IoDispatcher
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import com.reminmax.pointsapp.domain.use_case.IGetPointsUseCase
+import com.reminmax.pointsapp.domain.validation.IValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,6 +23,7 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getPointsUseCase: IGetPointsUseCase,
     private val resourceProvider: IResourceProvider,
+    private val validator: IValidator,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : ViewModel() {
 
@@ -29,7 +31,14 @@ class MainViewModel @Inject constructor(
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     fun getPoints() {
-        getPointsUseCase(count = uiState.value.pointCount.toInt()).onEach { result ->
+        validatePointCountValue()
+        if (!_uiState.value.isPointCountValid) return
+
+        updatePoints(count = _uiState.value.pointCount.toInt())
+    }
+
+    private fun updatePoints(count: Int) {
+        getPointsUseCase(count = count).onEach { result ->
             when (result) {
                 is SResult.Success -> {
                     _uiState.update {
@@ -39,6 +48,7 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 }
+
                 is SResult.Error -> {
                     _uiState.update {
                         it.copy(
@@ -47,6 +57,7 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 }
+
                 SResult.Empty -> {
                     _uiState.update {
                         it.copy(
@@ -55,6 +66,7 @@ class MainViewModel @Inject constructor(
                         )
                     }
                 }
+
                 SResult.Loading -> {
                     _uiState.update {
                         it.copy(isLoading = true)
@@ -64,21 +76,25 @@ class MainViewModel @Inject constructor(
         }.launchIn(viewModelScope + ioDispatcher)
     }
 
-    fun onPointCountValueChanged(value: String) {
+    private fun validatePointCountValue() {
+        val isValid = validator.validate(_uiState.value.pointCount)
         _uiState.update {
             it.copy(
-                pointCount = value,
-                isPointCountValueValid = value.isNotBlank()
+                pointCountError = if (isValid) null else
+                    resourceProvider.getString(R.string.pointCountValidationError)
             )
+        }
+    }
+
+    fun onPointCountValueChanged(value: String) {
+        _uiState.update {
+            it.copy(pointCount = value)
         }
     }
 
     fun onPointCountValueCleared() {
         _uiState.update {
-            it.copy(
-                pointCount = "",
-                isPointCountValueValid = false
-            )
+            it.copy(pointCount = "")
         }
     }
 }
