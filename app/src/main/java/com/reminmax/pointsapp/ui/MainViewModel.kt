@@ -1,6 +1,5 @@
 package com.reminmax.pointsapp.ui
 
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.data.SResult
@@ -8,6 +7,8 @@ import com.reminmax.pointsapp.di.IoDispatcher
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import com.reminmax.pointsapp.domain.use_case.IGetPointsUseCase
 import com.reminmax.pointsapp.domain.validation.IValidator
+import com.reminmax.pointsapp.ui.base.BaseViewModel
+import com.reminmax.pointsapp.ui.screens.home.HomeScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,7 @@ class MainViewModel @Inject constructor(
     private val resourceProvider: IResourceProvider,
     private val validator: IValidator,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
-) : ViewModel() {
+) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -47,6 +48,7 @@ class MainViewModel @Inject constructor(
                             points = result.data
                         )
                     }
+                    sendEvent(HomeScreenEvent.NavigateToChartScreen)
                 }
 
                 is SResult.Error -> {

@@ -21,6 +21,7 @@ import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.ui.MainViewModel
 import com.reminmax.pointsapp.ui.screens.home.components.PointCountTextField
 import com.reminmax.pointsapp.ui.shared.AppSnackBarHost
+import com.reminmax.pointsapp.ui.shared.observeWithLifecycle
 import com.reminmax.pointsapp.ui.theme.PointsAppTheme
 import com.reminmax.pointsapp.ui.theme.spacing
 
@@ -31,6 +32,13 @@ fun HomeRoute(
     onNavigateToChartScreen: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    viewModel.eventsFlow.observeWithLifecycle { event ->
+        when (event) {
+            HomeScreenEvent.NavigateToChartScreen -> onNavigateToChartScreen()
+        }
+    }
+
     HomeScreen(
         snackBarHostState = snackBarHostState,
         pointCount = uiState.pointCount,
@@ -59,7 +67,6 @@ fun HomeScreen(
     modifier: Modifier = Modifier,
 ) {
     val scaffoldState = rememberScaffoldState()
-
     Scaffold(
         scaffoldState = scaffoldState,
         snackbarHost = { AppSnackBarHost(hostState = snackBarHostState) },
