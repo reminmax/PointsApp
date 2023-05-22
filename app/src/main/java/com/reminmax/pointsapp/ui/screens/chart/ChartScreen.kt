@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.Text
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -15,7 +14,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reminmax.pointsapp.R
+import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.MainViewModel
+import com.reminmax.pointsapp.ui.screens.chart.components.PointsGrid
 import com.reminmax.pointsapp.ui.screens.chart.components.TopApplicationBar
 import com.reminmax.pointsapp.ui.shared.AppSnackBarHost
 import com.reminmax.pointsapp.ui.theme.PointsAppTheme
@@ -29,6 +30,7 @@ fun ChartRoute(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ChartScreen(
+        points = uiState.points,
         snackBarHostState = snackBarHostState,
         onNavigateBack = onNavigateBack,
         modifier = Modifier,
@@ -37,6 +39,7 @@ fun ChartRoute(
 
 @Composable
 fun ChartScreen(
+    points: List<Point>,
     snackBarHostState: SnackbarHostState,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
@@ -55,6 +58,7 @@ fun ChartScreen(
         },
     ) { innerPadding ->
         ChartScreenContent(
+            points = points,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -62,6 +66,7 @@ fun ChartScreen(
 
 @Composable
 fun ChartScreenContent(
+    points: List<Point>,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -73,7 +78,7 @@ fun ChartScreenContent(
                 top = MaterialTheme.spacing.small,
             )
     ) {
-        Text(text = "Chart screen")
+        PointsGrid(points = points)
     }
 }
 
@@ -82,8 +87,11 @@ fun ChartScreenContent(
 fun ChartScreenPreview() {
     PointsAppTheme {
         ChartScreen(
+            points = listOf(
+                Point(x = 10.0f, y = 20.0f)
+            ),
             snackBarHostState = SnackbarHostState(),
-            onNavigateBack = {}
+            onNavigateBack = {},
         )
     }
 }
