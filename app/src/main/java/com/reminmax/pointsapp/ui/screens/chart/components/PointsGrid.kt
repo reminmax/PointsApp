@@ -19,24 +19,6 @@ import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.theme.PointsAppTheme
 import com.reminmax.pointsapp.ui.theme.spacing
 
-@Composable
-fun RowScope.TableCell(
-    text: String,
-    weight: Float
-) {
-    Text(
-        text = text,
-        Modifier
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colors.primary
-            )
-            .weight(weight)
-            .padding(MaterialTheme.spacing.extraSmall),
-        textAlign = TextAlign.Center
-    )
-}
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PointsGrid(
@@ -82,6 +64,24 @@ fun PointsGrid(
             }
         }
     }
+}
+
+@Composable
+fun RowScope.TableCell(
+    text: String,
+    weight: Float
+) {
+    Text(
+        text = text,
+        Modifier
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colors.primary
+            )
+            .weight(weight)
+            .padding(MaterialTheme.spacing.extraSmall),
+        textAlign = TextAlign.Center
+    )
 }
 
 @Composable
