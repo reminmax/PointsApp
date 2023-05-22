@@ -1,5 +1,6 @@
 package com.reminmax.pointsapp.ui.screens.chart.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
@@ -36,25 +37,29 @@ fun RowScope.TableCell(
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PointsGrid(
     points: List<Point>,
+    modifier: Modifier = Modifier,
     column1Weight: Float = .20f,
     column2Weight: Float = .40f,
     column3Weight: Float = .40f,
 ) {
     LazyColumn(
-        Modifier
+        modifier = modifier
             .fillMaxWidth()
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colors.primary
             )
     ) {
-        item {
-            Row(Modifier.background(
-                color = MaterialTheme.colors.secondary.copy(alpha = 0.9F)
-            )) {
+        stickyHeader {
+            Row(
+                Modifier.background(
+                    color = MaterialTheme.colors.secondary.copy(alpha = 0.9F)
+                )
+            ) {
                 TableCell(text = "index", weight = column1Weight)
                 TableCell(text = "x", weight = column2Weight)
                 TableCell(text = "y", weight = column3Weight)
@@ -76,7 +81,8 @@ fun PointsGrid(
                 )
             }
         }
-    }}
+    }
+}
 
 @Composable
 @Preview(showBackground = true)
