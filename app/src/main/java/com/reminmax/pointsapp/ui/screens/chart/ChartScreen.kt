@@ -16,6 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.MainViewModel
+import com.reminmax.pointsapp.ui.screens.chart.components.PointsChart
 import com.reminmax.pointsapp.ui.screens.chart.components.PointsGrid
 import com.reminmax.pointsapp.ui.screens.chart.components.TopApplicationBar
 import com.reminmax.pointsapp.ui.shared.AppSnackBarHost
@@ -75,10 +76,15 @@ fun ChartScreenContent(
             .padding(
                 start = MaterialTheme.spacing.large,
                 end = MaterialTheme.spacing.large,
-                top = MaterialTheme.spacing.small,
+                top = MaterialTheme.spacing.large,
             )
     ) {
-        PointsGrid(points = points)
+        PointsGrid(
+            points = points,
+        )
+        PointsChart(
+            points = points,
+        )
     }
 }
 
