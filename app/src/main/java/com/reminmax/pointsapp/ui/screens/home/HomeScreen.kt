@@ -4,8 +4,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
@@ -21,6 +19,7 @@ import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.ui.MainViewModel
 import com.reminmax.pointsapp.ui.screens.home.components.PointCountTextField
 import com.reminmax.pointsapp.ui.shared.AppSnackBarHost
+import com.reminmax.pointsapp.ui.shared.LoadingButton
 import com.reminmax.pointsapp.ui.shared.observeWithLifecycle
 import com.reminmax.pointsapp.ui.theme.PointsAppTheme
 import com.reminmax.pointsapp.ui.theme.spacing
@@ -76,6 +75,7 @@ fun HomeScreen(
             onGetPoints = onGetPoints,
             isGoButtonAvailable = isGoButtonAvailable,
             errorMessage = errorMessage,
+            isLoading = isLoading,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -89,6 +89,7 @@ fun HomeScreenContent(
     onPointCountValueCleared: () -> Unit,
     onGetPoints: () -> Unit,
     errorMessage: String?,
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -112,23 +113,19 @@ fun HomeScreenContent(
             errorMessage = errorMessage,
             modifier = Modifier.padding(top = MaterialTheme.spacing.large)
         )
-        Button(
+
+        LoadingButton(
             onClick = onGetPoints,
-            shape = MaterialTheme.shapes.small,
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(top = MaterialTheme.spacing.small),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = MaterialTheme.colors.secondary,
-                contentColor = MaterialTheme.colors.onPrimary,
-            ),
-            enabled = isGoButtonAvailable
-        ) {
-            Text(
-                text = stringResource(id = R.string.goButtonLabel),
-                style = MaterialTheme.typography.button
-            )
-        }
+            modifier = modifier.fillMaxWidth(),
+            enabled = isGoButtonAvailable && !isLoading,
+            loading = isLoading,
+            content = {
+                Text(
+                    text = stringResource(id = R.string.goButtonLabel),
+                    style = MaterialTheme.typography.button
+                )
+            }
+        )
     }
 }
 
