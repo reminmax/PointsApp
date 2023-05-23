@@ -1,6 +1,7 @@
 package com.reminmax.pointsapp.ui.screens.chart
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -17,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -45,7 +47,6 @@ fun ChartRoute(
         points = uiState.points,
         snackBarHostState = snackBarHostState,
         onNavigateBack = onNavigateBack,
-        modifier = Modifier,
     )
 }
 
@@ -54,7 +55,6 @@ fun ChartScreen(
     points: List<Point>,
     snackBarHostState: SnackbarHostState,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val scaffoldState = rememberScaffoldState()
 
@@ -114,13 +114,19 @@ fun ChartScreenContentVertical(
                 .heightIn(max = screenHeight / 3)
                 .wrapContentHeight(align = Alignment.Top)
         )
-        PointsChart(
-            points = points,
+
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
                 .padding(top = MaterialTheme.spacing.medium)
-        )
+                .clipToBounds()
+        ) {
+            PointsChart(
+                points = points,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
@@ -139,12 +145,18 @@ fun ChartScreenContentHorizontal(
             points = points,
             modifier = Modifier.weight(1f)
         )
-        PointsChart(
-            points = points,
+
+        Box(
             modifier = Modifier
-                .weight(1f)
                 .fillMaxHeight()
-        )
+                .weight(1f)
+                .clipToBounds()
+        ) {
+            PointsChart(
+                points = points,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
     }
 }
 
