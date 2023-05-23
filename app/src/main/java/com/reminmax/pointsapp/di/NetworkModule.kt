@@ -1,13 +1,18 @@
 package com.reminmax.pointsapp.di
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.reminmax.pointsapp.common.helpers.NetworkUtils
 import com.reminmax.pointsapp.common.util.BASE_URL
 import com.reminmax.pointsapp.common.util.CONNECT_TIMEOUT
 import com.reminmax.pointsapp.data.data_source.remote.PointsApiService
 import com.reminmax.pointsapp.data.network.NetworkResultCallAdapterFactory
+import com.reminmax.pointsapp.domain.helpers.INetworkUtils
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -64,4 +69,13 @@ class NetworkModule {
             .build()
     }
 
+}
+
+@Singleton
+@Provides
+fun provideNetworkUtils(
+    @ApplicationContext context: Context,
+    connectivityManager: ConnectivityManager,
+): INetworkUtils {
+    return NetworkUtils(context, connectivityManager)
 }
