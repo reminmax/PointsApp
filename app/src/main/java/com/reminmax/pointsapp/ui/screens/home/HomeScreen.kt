@@ -45,7 +45,6 @@ fun HomeRoute(
         onPointCountValueChanged = viewModel::onPointCountValueChanged,
         onPointCountValueCleared = viewModel::onPointCountValueCleared,
         isLoading = uiState.isLoading,
-        onNavigateToChartScreen = onNavigateToChartScreen,
         onGetPoints = viewModel::getPoints,
         isGoButtonAvailable = uiState.isGoButtonAvailable,
         errorMessage = uiState.pointCountError,
@@ -59,7 +58,6 @@ fun HomeScreen(
     pointCount: String,
     onPointCountValueChanged: (String) -> Unit,
     onPointCountValueCleared: () -> Unit,
-    onNavigateToChartScreen: () -> Unit,
     onGetPoints: () -> Unit,
     isGoButtonAvailable: Boolean,
     isLoading: Boolean,
@@ -76,7 +74,6 @@ fun HomeScreen(
             onPointCountValueChanged = onPointCountValueChanged,
             onPointCountValueCleared = onPointCountValueCleared,
             onGetPoints = onGetPoints,
-            onNavigateToChartScreen = onNavigateToChartScreen,
             isGoButtonAvailable = isGoButtonAvailable,
             errorMessage = errorMessage,
             modifier = Modifier.padding(innerPadding),
@@ -91,7 +88,6 @@ fun HomeScreenContent(
     onPointCountValueChanged: (String) -> Unit,
     onPointCountValueCleared: () -> Unit,
     onGetPoints: () -> Unit,
-    onNavigateToChartScreen: () -> Unit,
     errorMessage: String?,
     modifier: Modifier = Modifier,
 ) {
@@ -112,12 +108,11 @@ fun HomeScreenContent(
             value = pointCount,
             onValueChange = onPointCountValueChanged,
             onClearValue = onPointCountValueCleared,
-            onDone = {},
+            onDone = onGetPoints,
             errorMessage = errorMessage,
             modifier = Modifier.padding(top = MaterialTheme.spacing.large)
         )
         Button(
-            //onClick = onNavigateToChartScreen,
             onClick = onGetPoints,
             shape = MaterialTheme.shapes.small,
             modifier = modifier
@@ -144,7 +139,6 @@ fun HomeScreenPreview() {
         HomeScreen(
             snackBarHostState = SnackbarHostState(),
             isLoading = false,
-            onNavigateToChartScreen = {},
             isGoButtonAvailable = false,
             pointCount = "10",
             onPointCountValueChanged = {},
