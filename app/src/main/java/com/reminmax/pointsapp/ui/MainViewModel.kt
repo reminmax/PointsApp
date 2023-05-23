@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.data.SResult
 import com.reminmax.pointsapp.di.IoDispatcher
+import com.reminmax.pointsapp.domain.helpers.INetworkUtils
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import com.reminmax.pointsapp.domain.use_case.IGetPointsUseCase
 import com.reminmax.pointsapp.domain.validation.IValidator
@@ -25,6 +26,7 @@ class MainViewModel @Inject constructor(
     private val getPointsUseCase: IGetPointsUseCase,
     private val resourceProvider: IResourceProvider,
     private val validator: IValidator,
+    private val networkUtils: INetworkUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel() {
 
@@ -32,6 +34,13 @@ class MainViewModel @Inject constructor(
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
     fun getPoints() {
+        if (!networkUtils.hasNetworkConnection()) {
+            showErrorMessage(
+                message = resourceProvider.getString(R.string.noInternetConnection)
+            )
+            return
+        }
+
         validatePointCountValue()
         if (!_uiState.value.isPointCountValid) return
 
@@ -42,38 +51,25 @@ class MainViewModel @Inject constructor(
         getPointsUseCase(count = count).onEach { result ->
             when (result) {
                 is SResult.Success -> {
+                    stopLoading()
                     _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            points = result.data
-                        )
+                        it.copy(points = result.data)
                     }
                     sendEvent(HomeScreenEvent.NavigateToChartScreen)
                 }
 
                 is SResult.Error -> {
-                    _uiState.update {
-                        it.copy(
-                            errorMessage = result.message,
-                            isLoading = false
-                        )
-                    }
+                    stopLoading()
+                    showErrorMessage(message = result.message)
                 }
 
                 SResult.Empty -> {
-                    _uiState.update {
-                        it.copy(
-                            errorMessage = resourceProvider.getString(R.string.emptyResultErrorText),
-                            isLoading = false
-                        )
-                    }
+                    stopLoading()
+                    showErrorMessage(resourceProvider.getString(R.string.emptyResultErrorText))
                 }
 
-                SResult.Loading -> {
-                    _uiState.update {
-                        it.copy(isLoading = true)
-                    }
-                }
+                SResult.Loading ->
+                    startLoading()
             }
         }.launchIn(viewModelScope + ioDispatcher)
     }
@@ -82,7 +78,7 @@ class MainViewModel @Inject constructor(
         val isValid = validator.validate(_uiState.value.pointCount)
         _uiState.update {
             it.copy(
-                pointCountError = if (isValid) null else
+                errorMessage = if (isValid) null else
                     resourceProvider.getString(R.string.pointCountValidationError)
             )
         }
@@ -97,6 +93,27 @@ class MainViewModel @Inject constructor(
     fun onPointCountValueCleared() {
         _uiState.update {
             it.copy(pointCount = "")
+        }
+    }
+
+    private fun showErrorMessage(message: String? = null) {
+        _uiState.update {
+            it.copy(
+                errorMessage = message
+                    ?: resourceProvider.getString(R.string.pointCountValidationError)
+            )
+        }
+    }
+
+    private fun stopLoading() {
+        _uiState.update {
+            it.copy(isLoading = false)
+        }
+    }
+
+    private fun startLoading() {
+        _uiState.update {
+            it.copy(isLoading = true)
         }
     }
 }

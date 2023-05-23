@@ -10,9 +10,12 @@
 
     <string name="goBack">Назад</string>
     <string name="chartScreenHeader">График</string>
+    <string name="ok">ОК</string>
 
     <!-- Errors -->
     <string name="emptyResultErrorText">Запрос выполнен успешно, но получено пустое значение</string>
     <string name="pointCountValidationError">Допускается ввод только целых чисел от 1 до 100</string>
+    <string name="noInternetConnection">Отсутствует интернет соединение</string>
+    <string name="anUnexpectedErrorOccurred">Произошла неизвестная ошибка</string>
 
 </resources>

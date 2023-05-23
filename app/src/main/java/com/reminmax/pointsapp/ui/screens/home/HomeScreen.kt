@@ -46,8 +46,7 @@ fun HomeRoute(
         isLoading = uiState.isLoading,
         onGetPoints = viewModel::getPoints,
         isGoButtonAvailable = uiState.isGoButtonAvailable,
-        errorMessage = uiState.pointCountError,
-        modifier = Modifier,
+        errorMessage = uiState.errorMessage,
     )
 }
 
@@ -61,7 +60,6 @@ fun HomeScreen(
     isGoButtonAvailable: Boolean,
     isLoading: Boolean,
     errorMessage: String?,
-    modifier: Modifier = Modifier,
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -141,7 +139,7 @@ fun HomeScreenPreview() {
             onPointCountValueChanged = {},
             onPointCountValueCleared = {},
             onGetPoints = {},
-            errorMessage = ""
+            errorMessage = null,
         )
     }
 }
