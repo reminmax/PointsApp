@@ -69,13 +69,12 @@ class NetworkModule {
             .build()
     }
 
-}
-
-@Singleton
-@Provides
-fun provideNetworkUtils(
-    @ApplicationContext context: Context,
-    connectivityManager: ConnectivityManager,
-): INetworkUtils {
-    return NetworkUtils(context, connectivityManager)
+    @Singleton
+    @Provides
+    fun provideNetworkUtils(
+        @ApplicationContext context: Context,
+        connectivityManager: ConnectivityManager,
+    ): INetworkUtils {
+        return NetworkUtils(context, connectivityManager)
+    }
 }
