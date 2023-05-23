@@ -30,7 +30,6 @@ fun PointsGrid(
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxWidth()
             .border(
                 width = 2.dp,
                 color = MaterialTheme.colors.primary

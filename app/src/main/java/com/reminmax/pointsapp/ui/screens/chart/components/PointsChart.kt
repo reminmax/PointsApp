@@ -3,8 +3,6 @@ package com.reminmax.pointsapp.ui.screens.chart.components
 import android.graphics.PointF
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.shared.dashedBorder
-import com.reminmax.pointsapp.ui.theme.spacing
 
 @Composable
 fun PointsChart(
@@ -36,11 +33,6 @@ fun PointsChart(
 
     Canvas(
         modifier = modifier
-            .fillMaxSize()
-            .padding(
-                top = MaterialTheme.spacing.medium,
-                bottom = MaterialTheme.spacing.large
-            )
             .background(color = Color(0xFFFCFCFA))
             .dashedBorder(
                 strokeWidth = 1.dp,
