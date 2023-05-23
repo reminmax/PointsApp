@@ -1,4 +1,4 @@
-package com.reminmax.pointsapp.common.helpers
+package com.reminmax.pointsapp.data.helpers
 
 import android.content.Context
 import android.net.ConnectivityManager
