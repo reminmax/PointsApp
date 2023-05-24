@@ -46,7 +46,7 @@ fun PointCountTextField(
             onValueChange = onValueChange,
             modifier = modifier
                 .fillMaxWidth()
-                .heightIn(min = MaterialTheme.dimensions.minTextFieldHeight),
+                .heightIn(min = MaterialTheme.dimensions.minHeight),
             //textStyle =,
             label = {
                 Text(

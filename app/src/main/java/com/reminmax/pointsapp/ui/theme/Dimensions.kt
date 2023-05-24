@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 data class Dimensions(
-    val minTextFieldHeight: Dp = 56.dp,
+    val minHeight: Dp = 56.dp,
 )
 
 val localDimension = compositionLocalOf { Dimensions() }
