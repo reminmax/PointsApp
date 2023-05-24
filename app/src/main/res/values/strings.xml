@@ -14,7 +14,10 @@
 
     <!-- Errors -->
     <string name="emptyResultErrorText">Запрос выполнен успешно, но получено пустое значение</string>
-    <string name="pointCountValidationError">Допускается ввод только целых чисел от 1 до 100</string>
+    <string name="valueCantBeEmptyError">Значение не может быть пустым</string>
+    <string name="shouldNotContainAnyAlphabetCharactersError">Допускается ввод только числовых символов</string>
+    <string name="valueOutOfRangeError">Допускается ввод только целых чисел от %1$d до %2$d</string>
+    <string name="onlyIntegerValuesAcceptedError">Допускается ввод только целых чисел</string>
     <string name="noInternetConnection">Отсутствует интернет соединение</string>
     <string name="anUnexpectedErrorOccurred">Произошла неизвестная ошибка</string>
 

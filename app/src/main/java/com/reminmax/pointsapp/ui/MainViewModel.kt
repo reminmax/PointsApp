@@ -2,12 +2,18 @@ package com.reminmax.pointsapp.ui
 
 import androidx.lifecycle.viewModelScope
 import com.reminmax.pointsapp.R
+import com.reminmax.pointsapp.common.util.MAX_POINT_COUNT
+import com.reminmax.pointsapp.common.util.MIN_POINT_COUNT
 import com.reminmax.pointsapp.data.SResult
 import com.reminmax.pointsapp.di.IoDispatcher
 import com.reminmax.pointsapp.domain.helpers.INetworkUtils
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import com.reminmax.pointsapp.domain.use_case.IGetPointsUseCase
 import com.reminmax.pointsapp.domain.validation.IValidator
+import com.reminmax.pointsapp.domain.validation.rules.IsInRangeValidationRule
+import com.reminmax.pointsapp.domain.validation.rules.IsIntegerValidationRule
+import com.reminmax.pointsapp.domain.validation.rules.NotEmptyValidationRule
+import com.reminmax.pointsapp.domain.validation.rules.OnlyNumbersValidationRule
 import com.reminmax.pointsapp.ui.base.BaseViewModel
 import com.reminmax.pointsapp.ui.screens.home.HomeScreenEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -75,13 +81,42 @@ class MainViewModel @Inject constructor(
     }
 
     private fun validatePointCountValue() {
-        val isValid = validator.validate(_uiState.value.pointCount)
-        _uiState.update {
-            it.copy(
-                errorMessage = if (isValid) null else
-                    resourceProvider.getString(R.string.pointCountValidationError)
+        validator
+            .addValidationRules(
+                NotEmptyValidationRule(
+                    errorMsg = resourceProvider.getString(R.string.valueCantBeEmptyError)
+                ),
+                IsIntegerValidationRule(
+                    errorMsg = resourceProvider.getString(
+                        R.string.onlyIntegerValuesAcceptedError
+                    )
+                ),
+                OnlyNumbersValidationRule(
+                    errorMsg = resourceProvider.getString(
+                        R.string.shouldNotContainAnyAlphabetCharactersError
+                    )
+                ),
+                IsInRangeValidationRule(
+                    startRange = 0,
+                    endRange = 0,
+                    errorMsg = resourceProvider.getString(
+                        R.string.valueOutOfRangeError,
+                        MIN_POINT_COUNT,
+                        MAX_POINT_COUNT
+                    )
+                )
             )
-        }
+            .addSuccessCallback {
+                _uiState.update {
+                    it.copy(errorMessage = null)
+                }
+            }
+            .addErrorCallback { errorMsg ->
+                _uiState.update {
+                    it.copy(errorMessage = errorMsg)
+                }
+            }
+            .validate(_uiState.value.pointCount)
     }
 
     fun onPointCountValueChanged(value: String) {
@@ -100,7 +135,7 @@ class MainViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 errorMessage = message
-                    ?: resourceProvider.getString(R.string.pointCountValidationError)
+                    ?: resourceProvider.getString(R.string.anUnexpectedErrorOccurred)
             )
         }
     }
