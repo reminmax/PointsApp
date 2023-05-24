@@ -97,8 +97,8 @@ class MainViewModel @Inject constructor(
                     )
                 ),
                 IsInRangeValidationRule(
-                    startRange = 0,
-                    endRange = 0,
+                    startRange = MIN_POINT_COUNT,
+                    endRange = MAX_POINT_COUNT,
                     errorMsg = resourceProvider.getString(
                         R.string.valueOutOfRangeError,
                         MIN_POINT_COUNT,
