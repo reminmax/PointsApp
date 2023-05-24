@@ -5,6 +5,7 @@ import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.data.SResult
 import com.reminmax.pointsapp.di.IoDispatcher
 import com.reminmax.pointsapp.domain.helpers.INetworkUtils
+import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import com.reminmax.pointsapp.domain.use_case.IGetPointsUseCase
 import com.reminmax.pointsapp.domain.use_case.IValidatePointCountUseCase
@@ -117,6 +118,12 @@ class MainViewModel @Inject constructor(
     private fun startLoading() {
         _uiState.update {
             it.copy(isLoading = true)
+        }
+    }
+
+    fun onChartStyleSelected(style: LinearChartStyle) {
+        _uiState.update {
+            it.copy(chartStyle = style)
         }
     }
 }

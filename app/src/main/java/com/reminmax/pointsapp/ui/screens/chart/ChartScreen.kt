@@ -25,8 +25,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reminmax.pointsapp.R
+import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.MainViewModel
+import com.reminmax.pointsapp.ui.screens.chart.components.ChartStyleOptions
 import com.reminmax.pointsapp.ui.screens.chart.components.PointsChart
 import com.reminmax.pointsapp.ui.screens.chart.components.PointsGrid
 import com.reminmax.pointsapp.ui.screens.chart.components.TopApplicationBar
@@ -47,6 +49,8 @@ fun ChartRoute(
         points = uiState.points,
         snackBarHostState = snackBarHostState,
         onNavigateBack = onNavigateBack,
+        chartStyle = uiState.chartStyle,
+        onChartStyleSelected = viewModel::onChartStyleSelected
     )
 }
 
@@ -55,6 +59,8 @@ fun ChartScreen(
     points: List<Point>,
     snackBarHostState: SnackbarHostState,
     onNavigateBack: () -> Unit,
+    chartStyle: LinearChartStyle,
+    onChartStyleSelected: (LinearChartStyle) -> Unit,
 ) {
     val scaffoldState = rememberScaffoldState()
 
@@ -71,6 +77,8 @@ fun ChartScreen(
     ) { innerPadding ->
         ChartScreenContent(
             points = points,
+            onChartStyleSelected = onChartStyleSelected,
+            chartStyle = chartStyle,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -79,6 +87,8 @@ fun ChartScreen(
 @Composable
 fun ChartScreenContent(
     points: List<Point>,
+    onChartStyleSelected: (LinearChartStyle) -> Unit,
+    chartStyle: LinearChartStyle,
     modifier: Modifier = Modifier,
 ) {
     val windowInfo = rememberWindowInfo()
@@ -86,11 +96,15 @@ fun ChartScreenContent(
         ChartScreenContentVertical(
             points = points,
             screenHeight = windowInfo.screenHeight,
+            onChartStyleSelected = onChartStyleSelected,
+            chartStyle = chartStyle,
             modifier = modifier
         )
     } else {
         ChartScreenContentHorizontal(
             points = points,
+            chartStyle = chartStyle,
+            onChartStyleSelected = onChartStyleSelected,
             modifier = modifier
         )
     }
@@ -100,6 +114,8 @@ fun ChartScreenContent(
 fun ChartScreenContentVertical(
     points: List<Point>,
     screenHeight: Dp,
+    onChartStyleSelected: (LinearChartStyle) -> Unit,
+    chartStyle: LinearChartStyle,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -115,6 +131,11 @@ fun ChartScreenContentVertical(
                 .wrapContentHeight(align = Alignment.Top)
         )
 
+        ChartStyleOptions(
+            onChartStyleSelected = onChartStyleSelected,
+            chartStyle = chartStyle,
+            modifier = Modifier
+        )
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -124,6 +145,7 @@ fun ChartScreenContentVertical(
         ) {
             PointsChart(
                 points = points,
+                chartStyle = chartStyle,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -133,6 +155,8 @@ fun ChartScreenContentVertical(
 @Composable
 fun ChartScreenContentHorizontal(
     points: List<Point>,
+    chartStyle: LinearChartStyle,
+    onChartStyleSelected: (LinearChartStyle) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -141,21 +165,31 @@ fun ChartScreenContentHorizontal(
             .padding(MaterialTheme.spacing.large),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        PointsGrid(
-            points = points,
-            modifier = Modifier.weight(1f)
-        )
-
-        Box(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f)
-                .clipToBounds()
-        ) {
-            PointsChart(
+        Column(modifier = Modifier.weight(1f)) {
+            PointsGrid(
                 points = points,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.weight(1f)
             )
+        }
+
+        Column(modifier = Modifier.weight(1f)) {
+            ChartStyleOptions(
+                onChartStyleSelected = onChartStyleSelected,
+                chartStyle = chartStyle,
+                modifier = Modifier
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    //.weight(1f)
+                    .clipToBounds()
+            ) {
+                PointsChart(
+                    points = points,
+                    chartStyle = chartStyle,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
         }
     }
 }
@@ -170,6 +204,8 @@ fun ChartScreenPreview() {
             ),
             snackBarHostState = SnackbarHostState(),
             onNavigateBack = {},
+            chartStyle = LinearChartStyle.DEFAULT,
+            onChartStyleSelected = {},
         )
     }
 }
@@ -182,7 +218,9 @@ fun ChartScreenContentVerticalPreview() {
             points = listOf(
                 Point(x = 10.0f, y = 20.0f),
             ),
-            screenHeight = 200.dp
+            screenHeight = 200.dp,
+            onChartStyleSelected = {},
+            chartStyle = LinearChartStyle.DEFAULT,
         )
     }
 }
@@ -195,6 +233,8 @@ fun ChartScreenContentHorizontalPreview() {
             points = listOf(
                 Point(x = 10.0f, y = 20.0f),
             ),
+            chartStyle = LinearChartStyle.DEFAULT,
+            onChartStyleSelected = {},
         )
     }
 }

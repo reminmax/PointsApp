@@ -28,7 +28,7 @@ import com.reminmax.pointsapp.ui.shared.dashedBorder
 fun PointsChart(
     points: List<Point>,
     modifier: Modifier = Modifier,
-    chartStyle: LinearChartStyle = LinearChartStyle.DEFAULT,
+    chartStyle: LinearChartStyle,
 ) {
     val minX = remember { points.minBy { it.x }.x }
     val maxX = remember { points.maxBy { it.x }.x }
