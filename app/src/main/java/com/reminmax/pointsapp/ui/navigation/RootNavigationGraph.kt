@@ -14,6 +14,7 @@ import com.reminmax.pointsapp.ui.screens.home.HomeRoute
 @Composable
 fun RootNavigationGraph(
     navController: NavHostController,
+    onGoToAppSettings: () -> Unit,
 ) {
     val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
     val viewModel = hiltViewModel<MainViewModel>()

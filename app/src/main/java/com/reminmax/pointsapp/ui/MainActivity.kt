@@ -1,5 +1,9 @@
 package com.reminmax.pointsapp.ui
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,8 +20,16 @@ class MainActivity : ComponentActivity() {
             PointsAppTheme {
                 RootNavigationGraph(
                     navController = rememberNavController(),
+                    onGoToAppSettings = ::openAppSettings
                 )
             }
         }
     }
+}
+
+fun Activity.openAppSettings() {
+    Intent(
+        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+        Uri.fromParts("package", packageName, null)
+    ).also(::startActivity)
 }
