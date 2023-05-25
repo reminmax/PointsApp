@@ -14,6 +14,7 @@ class Validator @Inject constructor() : IValidator {
     var successCallback: (() -> Unit)? = null
 
     override fun addValidationRules(vararg rules: BaseValidationRule): IValidator {
+        rulesValidationList.clear()
         rules.forEach { validationRule ->
             rulesValidationList.add(validationRule)
         }
@@ -31,9 +32,6 @@ class Validator @Inject constructor() : IValidator {
     }
 
     override fun validate(value: String): Boolean {
-//
-//        return value.toInt() in 1..100
-
         for (rule in rulesValidationList) {
             if (!rule.validate(value)) {
                 isValid = false
