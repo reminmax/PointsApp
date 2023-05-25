@@ -50,7 +50,8 @@ fun ChartRoute(
         snackBarHostState = snackBarHostState,
         onNavigateBack = onNavigateBack,
         chartStyle = uiState.chartStyle,
-        onChartStyleSelected = viewModel::onChartStyleSelected
+        onChartStyleSelected = viewModel::onChartStyleSelected,
+        onSaveChartToFile = {}
     )
 }
 
@@ -61,6 +62,7 @@ fun ChartScreen(
     onNavigateBack: () -> Unit,
     chartStyle: LinearChartStyle,
     onChartStyleSelected: (LinearChartStyle) -> Unit,
+    onSaveChartToFile: () -> Unit,
 ) {
     val scaffoldState = rememberScaffoldState()
 
@@ -72,6 +74,7 @@ fun ChartScreen(
                 modifier = Modifier,
                 title = stringResource(id = R.string.chartScreenHeader),
                 onNavigateBack = onNavigateBack,
+                onSaveChartToFile = onSaveChartToFile,
             )
         },
     ) { innerPadding ->
@@ -206,6 +209,7 @@ fun ChartScreenPreview() {
             onNavigateBack = {},
             chartStyle = LinearChartStyle.DEFAULT,
             onChartStyleSelected = {},
+            onSaveChartToFile = {},
         )
     }
 }
