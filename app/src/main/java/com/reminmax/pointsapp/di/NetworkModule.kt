@@ -3,8 +3,8 @@ package com.reminmax.pointsapp.di
 import android.content.Context
 import android.net.ConnectivityManager
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.reminmax.pointsapp.BuildConfig
 import com.reminmax.pointsapp.data.helpers.NetworkUtils
-import com.reminmax.pointsapp.common.util.BASE_URL
 import com.reminmax.pointsapp.common.util.CONNECT_TIMEOUT
 import com.reminmax.pointsapp.data.data_source.remote.PointsApiService
 import com.reminmax.pointsapp.data.network.NetworkResultCallAdapterFactory
@@ -62,7 +62,7 @@ class NetworkModule {
         }
 
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
             .addCallAdapterFactory(NetworkResultCallAdapterFactory.create())
             .addConverterFactory(json.asConverterFactory(contentType))

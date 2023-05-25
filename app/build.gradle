@@ -21,6 +21,10 @@ android {
         vectorDrawables {
             useSupportLibrary true
         }
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("local.properties").newDataInputStream())
+        buildConfigField "String", "BASE_URL", "\"${properties.getProperty("BASE_URL")}\""
     }
 
     buildTypes {
@@ -93,6 +97,8 @@ dependencies {
 
     // Timber
     implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation "com.google.accompanist:accompanist-permissions:0.31.2-alpha"
 
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.10'
 
