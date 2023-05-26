@@ -7,7 +7,7 @@ import com.reminmax.pointsapp.data.data_source.remote.PointsApiService
 import com.reminmax.pointsapp.data.network.NetworkResultCallAdapterFactory
 import com.reminmax.pointsapp.data.repository.PointsApiDataSource
 import com.reminmax.pointsapp.util.CoroutineTestRule
-import com.reminmax.pointsapp.util.POINTS_RESPONSE_FILENAME
+import com.reminmax.pointsapp.util.GET_POINTS_RESPONSE_ASSET
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -111,16 +111,14 @@ class GetPointsUseCaseTest {
 
     @Test
     fun `check successful response`() = runTest {
-        javaClass.classLoader?.let {
-            val inputStream = it.getResourceAsStream(POINTS_RESPONSE_FILENAME)
-            val source = inputStream.source().buffer()
-            val mockResponse = MockResponse()
-            mockResponse.apply {
-                setBody(source.readString(Charsets.UTF_8))
-                setResponseCode(200)
-            }
-            mockWebServer.enqueue(mockResponse)
+        val inputStream = JvmUnitTestFakeAssetManager.open(GET_POINTS_RESPONSE_ASSET)
+        val source = inputStream.source().buffer()
+        val mockResponse = MockResponse()
+        mockResponse.apply {
+            setBody(source.readString(Charsets.UTF_8))
+            setResponseCode(200)
         }
+        mockWebServer.enqueue(mockResponse)
 
         val flow = getPointsUseCase.invoke(count = pointCount)
         launch {

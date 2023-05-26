@@ -9,7 +9,7 @@ import com.reminmax.pointsapp.data.entity.PointDto
 import com.reminmax.pointsapp.data.network.NetworkResult
 import com.reminmax.pointsapp.data.network.NetworkResultCallAdapterFactory
 import com.reminmax.pointsapp.data.network.onSuccess
-import com.reminmax.pointsapp.util.POINTS_RESPONSE_FILENAME
+import com.reminmax.pointsapp.util.GET_POINTS_RESPONSE_ASSET
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -63,16 +63,14 @@ class PointsApiServiceTest {
     }
 
     private fun enqueueMockResponse() {
-        javaClass.classLoader?.let {
-            val inputStream = it.getResourceAsStream(POINTS_RESPONSE_FILENAME)
-            val source = inputStream.source().buffer()
-            val mockResponse = MockResponse()
-            mockResponse.apply {
-                setBody(source.readString(Charsets.UTF_8))
-                setResponseCode(200)
-            }
-            mockServer.enqueue(mockResponse)
+        val inputStream = JvmUnitTestFakeAssetManager.open(GET_POINTS_RESPONSE_ASSET)
+        val source = inputStream.source().buffer()
+        val mockResponse = MockResponse()
+        mockResponse.apply {
+            setBody(source.readString(Charsets.UTF_8))
+            setResponseCode(200)
         }
+        mockServer.enqueue(mockResponse)
     }
 
     @Test
