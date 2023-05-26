@@ -1,4 +1,4 @@
-package com.reminmax.pointsapp
+package com.reminmax.pointsapp.util
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
