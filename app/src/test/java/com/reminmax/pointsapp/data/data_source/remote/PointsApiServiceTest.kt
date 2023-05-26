@@ -2,13 +2,14 @@ package com.reminmax.pointsapp.data.data_source.remote
 
 import com.google.common.truth.Truth.assertThat
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.reminmax.pointsapp.CoroutineTestRule
+import com.reminmax.pointsapp.util.CoroutineTestRule
 import com.reminmax.pointsapp.common.util.POINTS_PATH
 import com.reminmax.pointsapp.data.entity.GetPointsResponse
 import com.reminmax.pointsapp.data.entity.PointDto
 import com.reminmax.pointsapp.data.network.NetworkResult
 import com.reminmax.pointsapp.data.network.NetworkResultCallAdapterFactory
 import com.reminmax.pointsapp.data.network.onSuccess
+import com.reminmax.pointsapp.util.POINTS_RESPONSE_FILENAME
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
@@ -25,8 +26,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 import retrofit2.Retrofit
-
-private const val POINTS_RESPONSE_FILENAME = "mock_response/GetPointsResponse.json"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(JUnit4::class)
