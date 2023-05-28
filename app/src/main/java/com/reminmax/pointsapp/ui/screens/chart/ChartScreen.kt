@@ -27,7 +27,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.model.Point
-import com.reminmax.pointsapp.ui.MainViewModel
 import com.reminmax.pointsapp.ui.screens.chart.components.ChartStyleOptions
 import com.reminmax.pointsapp.ui.screens.chart.components.PointsChart
 import com.reminmax.pointsapp.ui.screens.chart.components.PointsGrid
@@ -40,7 +39,7 @@ import com.reminmax.pointsapp.ui.theme.spacing
 
 @Composable
 fun ChartRoute(
-    viewModel: MainViewModel,
+    viewModel: ChartViewModel,
     snackBarHostState: SnackbarHostState,
     onNavigateBack: () -> Unit,
 ) {

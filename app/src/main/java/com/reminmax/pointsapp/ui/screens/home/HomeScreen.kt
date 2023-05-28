@@ -16,25 +16,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.reminmax.pointsapp.R
-import com.reminmax.pointsapp.ui.MainViewModel
+import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.screens.home.components.PointCountTextField
 import com.reminmax.pointsapp.ui.shared.AppSnackBarHost
 import com.reminmax.pointsapp.ui.shared.LoadingButton
 import com.reminmax.pointsapp.ui.shared.observeWithLifecycle
 import com.reminmax.pointsapp.ui.theme.PointsAppTheme
 import com.reminmax.pointsapp.ui.theme.spacing
+import kotlinx.serialization.builtins.ListSerializer
+import kotlinx.serialization.json.Json
 
 @Composable
 fun HomeRoute(
-    viewModel: MainViewModel,
+    viewModel: HomeViewModel,
     snackBarHostState: SnackbarHostState,
-    onNavigateToChartScreen: () -> Unit,
+    onNavigateToChartScreen: (String) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     viewModel.eventsFlow.observeWithLifecycle { event ->
         when (event) {
-            HomeScreenEvent.NavigateToChartScreen -> onNavigateToChartScreen()
+            is HomeScreenEvent.NavigateToChartScreen ->
+                onNavigateToChartScreen(
+                    Json.encodeToString(ListSerializer(Point.serializer()), event.points)
+                )
         }
     }
 
