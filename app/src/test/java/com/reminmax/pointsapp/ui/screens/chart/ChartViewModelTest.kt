@@ -20,7 +20,6 @@ class ChartViewModelTest {
 
     @get:Rule
     var coroutineTestRule = CoroutineTestRule()
-    private val testDispatcher = coroutineTestRule.testDispatcher
 
     private lateinit var viewModel: ChartViewModel
 
@@ -33,7 +32,6 @@ class ChartViewModelTest {
     fun setup() {
         viewModel = ChartViewModel(
             savedStateHandle = savedStateHandle,
-            ioDispatcher = testDispatcher
         )
     }
 
