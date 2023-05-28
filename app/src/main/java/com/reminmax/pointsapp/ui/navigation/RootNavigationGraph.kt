@@ -18,6 +18,9 @@ import com.reminmax.pointsapp.ui.screens.home.HomeViewModel
 fun RootNavigationGraph(
     navController: NavHostController,
     onGoToAppSettings: () -> Unit,
+    navActions: NavigationActions = remember(navController) {
+        NavigationActions(navController)
+    }
 ) {
     val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
 
@@ -34,7 +37,7 @@ fun RootNavigationGraph(
                 viewModel = viewModel,
                 snackBarHostState = snackBarHostState,
                 onNavigateToChartScreen = { points ->
-                    navController.navigate("${NavigationGraph.CHART}/$points")
+                    navActions.navigateToChartScreen(points = points)
                 }
             )
         }
@@ -49,7 +52,7 @@ fun RootNavigationGraph(
                 viewModel = viewModel,
                 snackBarHostState = snackBarHostState,
                 onNavigateBack = {
-                    navController.popBackStack()
+                    navActions.navigateBack()
                 }
             )
         }
