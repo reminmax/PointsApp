@@ -49,9 +49,43 @@ class ChartViewModelTest {
     }
 
     @Test
-    fun `ChartStyleSelected test`() {
+    fun `ChartStyleSelected test`() = runTest {
         viewModel.dispatch(ChartAction.ChartStyleSelected(LinearChartStyle.SMOOTH))
 
         assertThat(viewModel.uiState.value.chartStyle).isEqualTo(LinearChartStyle.SMOOTH)
+    }
+
+    @Test
+    fun `ShowUserMessage test`() = runTest {
+        val msgText = "Some message text"
+        viewModel.dispatch(ChartAction.ShowUserMessage(messageToShow = msgText))
+
+        viewModel.userMessages.test {
+            val state = awaitItem()
+            assertThat(state).isNotEmpty()
+            assertThat(state.size).isEqualTo(1)
+            assertThat(state.first().message).isEqualTo(msgText)
+        }
+    }
+
+    @Test
+    fun `UserMessageShown test`() = runTest {
+        val msgText = "Some message text"
+        viewModel.dispatch(ChartAction.ShowUserMessage(messageToShow = msgText))
+
+        var msgId = 0L
+        viewModel.userMessages.test {
+            val state = awaitItem()
+            assertThat(state).isNotEmpty()
+            assertThat(state.size).isEqualTo(1)
+            assertThat(state.first().message).isEqualTo(msgText)
+            msgId = state.first().id
+        }
+
+        viewModel.dispatch(ChartAction.UserMessageShown(messageId = msgId))
+        viewModel.userMessages.test {
+            val state = awaitItem()
+            assertThat(state).isEmpty()
+        }
     }
 }
