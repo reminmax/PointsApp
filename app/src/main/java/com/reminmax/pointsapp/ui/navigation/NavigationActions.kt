@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 class NavigationActions(private val navController: NavHostController) {
 
     fun navigateToChartScreen(points: String) {
-        buildChartRoute(points = points)
+        navController.navigate(buildChartRoute(points = points))
     }
 
     fun navigateBack() {
