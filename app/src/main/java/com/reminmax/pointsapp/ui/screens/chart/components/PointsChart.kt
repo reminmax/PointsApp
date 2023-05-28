@@ -2,9 +2,12 @@ package com.reminmax.pointsapp.ui.screens.chart.components
 
 import android.graphics.PointF
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.gestures.rememberTransformableState
 import androidx.compose.foundation.gestures.transformable
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,11 +22,13 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.drawscope.Fill
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.shared.dashedBorder
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PointsChart(
     points: List<Point>,
@@ -38,8 +43,12 @@ fun PointsChart(
     val primaryColor = MaterialTheme.colors.primary
 
     var scale by remember { mutableFloatStateOf(1f) }
-    val transformableState = rememberTransformableState { scaleChange, offsetChange, rotationChange ->
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    val transformableState = rememberTransformableState { scaleChange, offsetChange, _ ->
         scale *= scaleChange
+        offsetX += offsetChange.x
+        offsetY += offsetChange.y
     }
 
     Canvas(
@@ -54,6 +63,15 @@ fun PointsChart(
                 scaleY = scale,
             )
             .transformable(state = transformableState)
+            .offset(x = offsetX.pxToDp(), y = offsetY.pxToDp())
+            .combinedClickable(
+                onClick = { },
+                onLongClick = {
+                    scale = 1f
+                    offsetX = 0f
+                    offsetY = 0f
+                },
+            )
     ) {
 
         val canvasWidth = size.width
@@ -151,3 +169,8 @@ fun PointsChart(
 
 private fun Float.normalize(): Float =
     if (this < 0) -this else this
+
+@Composable
+private fun Float.pxToDp() = with(LocalDensity.current) {
+    this@pxToDp.toDp()
+}
