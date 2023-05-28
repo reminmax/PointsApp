@@ -11,6 +11,8 @@
     <string name="goBack">Назад</string>
     <string name="chartScreenHeader">График</string>
     <string name="ok">ОК</string>
+    <string name="saveToFile">Сохранить в файл</string>
+    <string name="fileSavedSuccessfully">Файл записан в Галерею</string>
 
     <!-- Errors -->
     <string name="emptyResultErrorText">Запрос выполнен успешно, но получено пустое значение</string>
@@ -20,5 +22,7 @@
     <string name="onlyIntegerValuesAcceptedError">Допускается ввод только целых чисел</string>
     <string name="noInternetConnection">Отсутствует интернет соединение</string>
     <string name="anUnexpectedErrorOccurred">Произошла неизвестная ошибка</string>
+    <string name="captureCanvasToBitmapError">Ошибка захвата Canvas</string>
+    <string name="saveImageToMediaStoreError">Ошибка записи файла</string>
 
 </resources>

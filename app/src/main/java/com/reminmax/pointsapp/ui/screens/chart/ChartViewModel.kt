@@ -3,6 +3,7 @@ package com.reminmax.pointsapp.ui.screens.chart
 import androidx.lifecycle.SavedStateHandle
 import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.model.Point
+import com.reminmax.pointsapp.domain.model.UserMessage
 import com.reminmax.pointsapp.ui.base.BaseViewModel
 import com.reminmax.pointsapp.ui.navigation.NavigationParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.json.Json
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,6 +22,9 @@ class ChartViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ChartUiState())
     val uiState: StateFlow<ChartUiState> = _uiState.asStateFlow()
+
+    private val _userMessages = MutableStateFlow(emptyList<UserMessage>())
+    val userMessages: StateFlow<List<UserMessage>> = _userMessages.asStateFlow()
 
     // Примечание:
     // Вопреки настятельной рекомендации Google не передавать сложные объекты в качестве
@@ -48,8 +53,17 @@ class ChartViewModel @Inject constructor(
             is ChartAction.ChartStyleSelected -> {
                 onChartStyleSelected(action.style)
             }
+
             ChartAction.SaveChartToFile -> {
                 sendEvent(ChartScreenEvent.SaveChartToFile)
+            }
+
+            is ChartAction.ShowUserMessage -> {
+                onShowUserMessage(action.messageToShow)
+            }
+
+            is ChartAction.UserMessageShown -> {
+                onUserMessageShown(action.messageId)
             }
         }
     }
@@ -57,6 +71,21 @@ class ChartViewModel @Inject constructor(
     private fun onChartStyleSelected(style: LinearChartStyle) {
         _uiState.update {
             it.copy(chartStyle = style)
+        }
+    }
+
+    private fun onShowUserMessage(messageToShow: String) {
+        _userMessages.update {
+            it + UserMessage(
+                id = UUID.randomUUID().mostSignificantBits,
+                message = messageToShow
+            )
+        }
+    }
+
+    private fun onUserMessageShown(messageId: Long) {
+        _userMessages.update { msgList ->
+            msgList.filterNot { it.id == messageId }
         }
     }
 }

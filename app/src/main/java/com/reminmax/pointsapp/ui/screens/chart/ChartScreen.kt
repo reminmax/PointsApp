@@ -11,7 +11,9 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -44,6 +46,7 @@ fun ChartRoute(
     onNavigateBack: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val userMessages by viewModel.userMessages.collectAsStateWithLifecycle()
     val screenshotController = rememberScreenshotController()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -57,16 +60,39 @@ fun ChartRoute(
         screenshotController = screenshotController,
     )
 
+    val fileSavedSuccessfully = stringResource(id = R.string.fileSavedSuccessfully)
+    val captureCanvasToBitmapError = stringResource(id = R.string.captureCanvasToBitmapError)
+    val saveImageToMediaStoreError = stringResource(id = R.string.saveImageToMediaStoreError)
+
+    // Screen events
     viewModel.eventsFlow.observeWithLifecycle { event ->
         when (event) {
             is ChartScreenEvent.SaveChartToFile -> {
                 coroutineScope.launch(Dispatchers.IO) {
                     captureCanvasToBitmap(
                         context = context,
-                        screenshotController = screenshotController
+                        screenshotController = screenshotController,
+                        dispatchAction = viewModel::dispatch,
+                        fileSavedSuccessfully = fileSavedSuccessfully,
+                        captureCanvasToBitmapError = captureCanvasToBitmapError,
+                        saveImageToMediaStoreError = saveImageToMediaStoreError,
                     )
                 }
             }
+        }
+    }
+
+    // User messages
+    if (userMessages.isNotEmpty()) {
+        val message = remember(uiState) { userMessages[0] }
+        val messageText: String = message.message
+        val okMessageText = stringResource(id = R.string.ok)
+        LaunchedEffect(messageText, snackBarHostState) {
+            snackBarHostState.showSnackbar(
+                message = messageText,
+                actionLabel = okMessageText
+            )
+            viewModel.dispatch(ChartAction.UserMessageShown(message.id))
         }
     }
 }
@@ -141,7 +167,11 @@ fun ChartScreenContent(
 
 private suspend fun captureCanvasToBitmap(
     context: Context,
-    screenshotController: ScreenshotController
+    screenshotController: ScreenshotController,
+    dispatchAction: (ChartAction) -> Unit,
+    fileSavedSuccessfully: String,
+    captureCanvasToBitmapError: String,
+    saveImageToMediaStoreError: String,
 ) {
     screenshotController.captureToBitmap(
         config = Bitmap.Config.ARGB_8888
@@ -150,10 +180,17 @@ private suspend fun captureCanvasToBitmap(
             context = context,
             bitmap = bitmap
         )
-        println(uri)
+        dispatchAction(
+            ChartAction.ShowUserMessage(
+                if (uri != null) fileSavedSuccessfully else saveImageToMediaStoreError
+            )
+        )
     }.onFailure {
-        // TODO(Display error message)
-        println(it.localizedMessage)
+        dispatchAction(
+            ChartAction.ShowUserMessage(
+                it.localizedMessage ?: captureCanvasToBitmapError
+            )
+        )
     }
 }
 
