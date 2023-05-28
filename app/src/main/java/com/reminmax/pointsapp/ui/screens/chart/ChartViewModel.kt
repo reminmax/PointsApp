@@ -24,6 +24,20 @@ class ChartViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(ChartUiState())
     val uiState: StateFlow<ChartUiState> = _uiState.asStateFlow()
 
+    // Примечание:
+    // Вопреки настятельной рекомендации Google не передавать сложные объекты в качестве
+    // параметров навигации (вместо этого передавать ключ для извлечения данных),
+    // https://developer.android.com/jetpack/compose/navigation#retrieving-complex-data
+    // данная реализация состоит в передаче списка точек в формате json в качестве параметра
+    // навигации.
+    //
+    // Данный подход считаю допустимым по двум причинам:
+    // 1. Простота реализации (это не коммерческий проект); применение SharedViewModel,
+    // создание базы данных, использование DataStore (Shared Preferences) и др. распространенных
+    // способов передачи состояния нахожу избыточным.
+    // 2. Максимально допустимый размер сохраненного состояния Android (1Mb) гарантированно не
+    // будет превышен, так как максимальное количество точек ограничено диапазоном 1..100 путем
+    // валидации введенного пользователем значения (класс Validator).
     init {
         savedStateHandle.get<String>(NavigationParams.POINTS)?.let { points ->
             _uiState.update {
