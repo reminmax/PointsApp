@@ -20,19 +20,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import com.reminmax.pointsapp.R
+import com.reminmax.pointsapp.ui.screens.home.HomeAction
 import com.reminmax.pointsapp.ui.theme.dimensions
 
 @Composable
 fun PointCountTextField(
     value: String,
-    onValueChange: (String) -> Unit,
-    onClearValue: () -> Unit,
-    onDone: () -> Unit,
     errorMessage: String?,
+    dispatchAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val trailingIconView = @Composable {
-        IconButton(onClick = onClearValue) {
+        IconButton(
+            onClick = {
+                dispatchAction(HomeAction.PointCountValueChanged(""))
+            }
+        ) {
             Icon(
                 imageVector = Icons.Filled.Clear,
                 contentDescription = stringResource(R.string.clearTextField)
@@ -43,7 +46,9 @@ fun PointCountTextField(
     Column {
         OutlinedTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = { newValue ->
+                dispatchAction(HomeAction.PointCountValueChanged(newValue))
+            },
             modifier = modifier
                 .fillMaxWidth()
                 .heightIn(min = MaterialTheme.dimensions.minHeight),
@@ -68,7 +73,9 @@ fun PointCountTextField(
                 autoCorrect = false
             ),
             keyboardActions = KeyboardActions(
-                onDone = { onDone() }
+                onDone = {
+                    dispatchAction(HomeAction.GetPoints)
+                }
             ),
             singleLine = true,
             shape = MaterialTheme.shapes.small,
