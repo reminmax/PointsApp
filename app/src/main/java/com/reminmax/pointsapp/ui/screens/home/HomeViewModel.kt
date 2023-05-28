@@ -32,7 +32,19 @@ class HomeViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    fun getPoints() {
+    fun dispatch(action: HomeAction) {
+        when (action) {
+            HomeAction.GetPoints -> {
+                getPoints()
+            }
+
+            is HomeAction.PointCountValueChanged -> {
+                onPointCountValueChanged(action.value)
+            }
+        }
+    }
+
+    private fun getPoints() {
         if (!networkUtils.hasNetworkConnection()) {
             showErrorMessage(
                 message = resourceProvider.getString(R.string.noInternetConnection)
@@ -104,16 +116,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun onPointCountValueChanged(value: String) {
+    private fun onPointCountValueChanged(value: String) {
         _uiState.update {
             it.copy(pointCount = value)
         }
     }
-
-    fun onPointCountValueCleared() {
-        _uiState.update {
-            it.copy(pointCount = "")
-        }
-    }
-
 }

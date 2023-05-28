@@ -46,12 +46,10 @@ fun HomeRoute(
     HomeScreen(
         snackBarHostState = snackBarHostState,
         pointCount = uiState.pointCount,
-        onPointCountValueChanged = viewModel::onPointCountValueChanged,
-        onPointCountValueCleared = viewModel::onPointCountValueCleared,
         isLoading = uiState.isLoading,
-        onGetPoints = viewModel::getPoints,
         isGoButtonAvailable = uiState.isGoButtonAvailable,
         errorMessage = uiState.errorMessage,
+        dispatchAction = viewModel::dispatch
     )
 }
 
@@ -59,12 +57,10 @@ fun HomeRoute(
 fun HomeScreen(
     snackBarHostState: SnackbarHostState,
     pointCount: String,
-    onPointCountValueChanged: (String) -> Unit,
-    onPointCountValueCleared: () -> Unit,
-    onGetPoints: () -> Unit,
     isGoButtonAvailable: Boolean,
     isLoading: Boolean,
     errorMessage: String?,
+    dispatchAction: (HomeAction) -> Unit,
 ) {
     val scaffoldState = rememberScaffoldState()
     Scaffold(
@@ -73,12 +69,10 @@ fun HomeScreen(
     ) { innerPadding ->
         HomeScreenContent(
             pointCount = pointCount,
-            onPointCountValueChanged = onPointCountValueChanged,
-            onPointCountValueCleared = onPointCountValueCleared,
-            onGetPoints = onGetPoints,
             isGoButtonAvailable = isGoButtonAvailable,
             errorMessage = errorMessage,
             isLoading = isLoading,
+            dispatchAction = dispatchAction,
             modifier = Modifier.padding(innerPadding),
         )
     }
@@ -88,11 +82,9 @@ fun HomeScreen(
 fun HomeScreenContent(
     pointCount: String,
     isGoButtonAvailable: Boolean,
-    onPointCountValueChanged: (String) -> Unit,
-    onPointCountValueCleared: () -> Unit,
-    onGetPoints: () -> Unit,
     errorMessage: String?,
     isLoading: Boolean,
+    dispatchAction: (HomeAction) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -110,15 +102,15 @@ fun HomeScreenContent(
         )
         PointCountTextField(
             value = pointCount,
-            onValueChange = onPointCountValueChanged,
-            onClearValue = onPointCountValueCleared,
-            onDone = onGetPoints,
             errorMessage = errorMessage,
+            dispatchAction = dispatchAction,
             modifier = Modifier.padding(top = MaterialTheme.spacing.large)
         )
 
         LoadingButton(
-            onClick = onGetPoints,
+            onClick = {
+                dispatchAction(HomeAction.GetPoints)
+            },
             modifier = modifier.fillMaxWidth(),
             enabled = isGoButtonAvailable && !isLoading,
             loading = isLoading,
@@ -141,10 +133,8 @@ fun HomeScreenPreview() {
             isLoading = false,
             isGoButtonAvailable = false,
             pointCount = "10",
-            onPointCountValueChanged = {},
-            onPointCountValueCleared = {},
-            onGetPoints = {},
             errorMessage = null,
+            dispatchAction = {}
         )
     }
 }
