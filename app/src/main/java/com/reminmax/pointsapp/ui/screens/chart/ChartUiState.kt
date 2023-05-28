@@ -6,5 +6,4 @@ import com.reminmax.pointsapp.domain.model.Point
 data class ChartUiState(
     val points: List<Point> = listOf(),
     val chartStyle: LinearChartStyle = LinearChartStyle.DEFAULT,
-    val shouldSaveChartToFile: Boolean = false
 )

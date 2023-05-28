@@ -46,21 +46,20 @@ class ChartViewModel @Inject constructor(
         }
     }
 
-    fun onChartStyleSelected(style: LinearChartStyle) {
+    fun dispatch(action: ChartAction) {
+        when (action) {
+            is ChartAction.ChartStyleSelected -> {
+                onChartStyleSelected(action.style)
+            }
+            ChartAction.SaveChartToFile -> {
+                sendEvent(ChartScreenEvent.SaveChartToFile)
+            }
+        }
+    }
+
+    private fun onChartStyleSelected(style: LinearChartStyle) {
         _uiState.update {
             it.copy(chartStyle = style)
-        }
-    }
-
-    fun saveChartToFile() {
-        _uiState.update {
-            it.copy(shouldSaveChartToFile = true)
-        }
-    }
-
-    fun chartSavedToFile() {
-        _uiState.update {
-            it.copy(shouldSaveChartToFile = false)
         }
     }
 }
