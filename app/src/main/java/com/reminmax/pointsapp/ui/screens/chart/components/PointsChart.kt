@@ -8,7 +8,7 @@ import androidx.compose.foundation.gestures.transformable
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -37,7 +37,7 @@ fun PointsChart(
 
     val primaryColor = MaterialTheme.colors.primary
 
-    var scale by remember { mutableStateOf(1f) }
+    var scale by remember { mutableFloatStateOf(1f) }
     val transformableState = rememberTransformableState { scaleChange, offsetChange, rotationChange ->
         scale *= scaleChange
     }
