@@ -2,12 +2,18 @@ package com.reminmax.pointsapp.ui.screens.home
 
 import androidx.lifecycle.viewModelScope
 import com.reminmax.pointsapp.R
+import com.reminmax.pointsapp.common.util.MAX_POINT_COUNT
+import com.reminmax.pointsapp.common.util.MIN_POINT_COUNT
 import com.reminmax.pointsapp.data.SResult
 import com.reminmax.pointsapp.di.IoDispatcher
 import com.reminmax.pointsapp.domain.helpers.INetworkUtils
 import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import com.reminmax.pointsapp.domain.use_case.IGetPointsUseCase
-import com.reminmax.pointsapp.domain.use_case.IValidatePointCountUseCase
+import com.reminmax.pointsapp.domain.validation.IValidator
+import com.reminmax.pointsapp.domain.validation.rules.IsInRangeValidationRule
+import com.reminmax.pointsapp.domain.validation.rules.IsIntegerValidationRule
+import com.reminmax.pointsapp.domain.validation.rules.NotEmptyValidationRule
+import com.reminmax.pointsapp.domain.validation.rules.OnlyNumbersValidationRule
 import com.reminmax.pointsapp.ui.base.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -24,7 +30,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getPointsUseCase: IGetPointsUseCase,
     private val resourceProvider: IResourceProvider,
-    private val validatePointCountUseCase: IValidatePointCountUseCase,
+    private val validator: IValidator,
     private val networkUtils: INetworkUtils,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher,
 ) : BaseViewModel() {
@@ -83,16 +89,40 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun validatePointCountValue() {
-        val validationResult = validatePointCountUseCase(_uiState.value.pointCount)
-        if (validationResult.successful) {
-            _uiState.update {
-                it.copy(errorMessage = null)
+        validator
+            .addValidationRules(
+                NotEmptyValidationRule(
+                    errorMsg = resourceProvider.getString(R.string.valueCantBeEmptyError)
+                ),
+                IsIntegerValidationRule(
+                    errorMsg = resourceProvider.getString(R.string.onlyIntegerValuesAcceptedError)
+                ),
+                OnlyNumbersValidationRule(
+                    errorMsg = resourceProvider.getString(
+                        R.string.shouldNotContainAnyAlphabetCharactersError
+                    )
+                ),
+                IsInRangeValidationRule(
+                    startRange = MIN_POINT_COUNT,
+                    endRange = MAX_POINT_COUNT,
+                    errorMsg = resourceProvider.getString(
+                        R.string.valueOutOfRangeError,
+                        MIN_POINT_COUNT,
+                        MAX_POINT_COUNT
+                    )
+                )
+            )
+            .addSuccessCallback {
+                _uiState.update {
+                    it.copy(errorMessage = null)
+                }
             }
-        } else {
-            _uiState.update {
-                it.copy(errorMessage = validationResult.errorMessage)
+            .addErrorCallback { errorMsg ->
+                _uiState.update {
+                    it.copy(errorMessage = errorMsg)
+                }
             }
-        }
+            .validate(_uiState.value.pointCount)
     }
 
     private fun stopLoading() {
