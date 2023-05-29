@@ -23,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kpstv.compose.kapture.ScreenshotController
 import com.kpstv.compose.kapture.rememberScreenshotController
 import com.reminmax.pointsapp.R
+import com.reminmax.pointsapp.common.util.isSdkVer29OrLater
 import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.ui.screens.chart.components.ChartScreenContentHorizontal
@@ -198,7 +199,7 @@ private fun saveImageToMediaStore(
     context: Context,
     bitmap: Bitmap
 ): Uri? {
-    val imageCollections = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+    val imageCollections = if (isSdkVer29OrLater()) {
         MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
     } else {
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -220,7 +221,7 @@ private fun saveImageToMediaStore(
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, os)
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        if (isSdkVer29OrLater()) {
             imageDetails.clear()
             imageDetails.put(MediaStore.Images.Media.IS_PENDING, 0)
             resolver.update(imageContentUri, imageDetails, null, null)
