@@ -1,14 +1,18 @@
 package com.reminmax.pointsapp.ui.screens.chart
 
+import android.Manifest
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.SnackbarResult
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +24,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 import com.kpstv.compose.kapture.ScreenshotController
 import com.kpstv.compose.kapture.rememberScreenshotController
 import com.reminmax.pointsapp.R
@@ -38,13 +46,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.FileNotFoundException
 
-private const val displayName = "ChartImage"
+private const val FILE_DISPLAY_NAME = "ChartImage"
+private const val WRITE_EXTERNAL_STORAGE_PERMISSION = Manifest.permission.WRITE_EXTERNAL_STORAGE
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ChartRoute(
     viewModel: ChartViewModel,
     snackBarHostState: SnackbarHostState,
     onNavigateBack: () -> Unit,
+    onGoToAppSettings: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val userMessages by viewModel.userMessages.collectAsStateWithLifecycle()
@@ -61,14 +72,16 @@ fun ChartRoute(
         screenshotController = screenshotController,
     )
 
+    val permissionState = rememberPermissionState(WRITE_EXTERNAL_STORAGE_PERMISSION)
     val fileSavedSuccessfully = stringResource(id = R.string.fileSavedSuccessfully)
     val captureCanvasToBitmapError = stringResource(id = R.string.captureCanvasToBitmapError)
     val saveImageToMediaStoreError = stringResource(id = R.string.saveImageToMediaStoreError)
+    val goToAppSettings = stringResource(id = R.string.goToAppSettings)
+    val rationaleText = stringResource(id = R.string.rationaleText)
 
-    // Screen events
-    viewModel.eventsFlow.observeWithLifecycle { event ->
-        when (event) {
-            is ChartScreenEvent.SaveChartToFile -> {
+    val permissionLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted ->
+            if (permissionGranted) {
                 coroutineScope.launch(Dispatchers.IO) {
                     captureCanvasToBitmap(
                         context = context,
@@ -81,18 +94,53 @@ fun ChartRoute(
                 }
             }
         }
+
+    // Screen events
+    viewModel.eventsFlow.observeWithLifecycle { event ->
+        when (event) {
+            is ChartScreenEvent.SaveChartToFile -> {
+                if (permissionState.status.isGranted || isSdkVer29OrLater()) {
+                    coroutineScope.launch(Dispatchers.IO) {
+                        captureCanvasToBitmap(
+                            context = context,
+                            screenshotController = screenshotController,
+                            dispatchAction = viewModel::dispatch,
+                            fileSavedSuccessfully = fileSavedSuccessfully,
+                            captureCanvasToBitmapError = captureCanvasToBitmapError,
+                            saveImageToMediaStoreError = saveImageToMediaStoreError,
+                        )
+                    }
+                } else {
+                    if (permissionState.status.shouldShowRationale) {
+                        viewModel.dispatch(
+                            ChartAction.ShowUserMessage(
+                                messageToShow = rationaleText,
+                                actionLabel = goToAppSettings,
+                                onActionPerformed = {
+                                    onGoToAppSettings()
+                                }
+                            )
+                        )
+                    } else {
+                        permissionLauncher.launch(WRITE_EXTERNAL_STORAGE_PERMISSION)
+                    }
+                }
+            }
+        }
     }
 
     // User messages
     if (userMessages.isNotEmpty()) {
         val message = remember(uiState) { userMessages[0] }
         val messageText: String = message.message
-        val okMessageText = stringResource(id = R.string.ok)
         LaunchedEffect(messageText, snackBarHostState) {
-            snackBarHostState.showSnackbar(
+            val snackBarResult = snackBarHostState.showSnackbar(
                 message = messageText,
-                actionLabel = okMessageText
+                actionLabel = message.actionLabel
             )
+            if (snackBarResult == SnackbarResult.ActionPerformed) {
+                message.onActionPerformed()
+            }
             viewModel.dispatch(ChartAction.UserMessageShown(message.id))
         }
     }
@@ -183,7 +231,11 @@ private suspend fun captureCanvasToBitmap(
         )
         dispatchAction(
             ChartAction.ShowUserMessage(
-                if (uri != null) fileSavedSuccessfully else saveImageToMediaStoreError
+                messageToShow = if (uri != null) {
+                    "$fileSavedSuccessfully: $uri"
+                } else {
+                    saveImageToMediaStoreError
+                }
             )
         )
     }.onFailure {
@@ -206,7 +258,7 @@ private fun saveImageToMediaStore(
     }
 
     val imageDetails = ContentValues().apply {
-        put(MediaStore.Images.Media.DISPLAY_NAME, displayName)
+        put(MediaStore.Images.Media.DISPLAY_NAME, FILE_DISPLAY_NAME)
         put(MediaStore.Images.Media.MIME_TYPE, "image/png")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             put(MediaStore.Images.Media.IS_PENDING, 1)

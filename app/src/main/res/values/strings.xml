@@ -12,7 +12,10 @@
     <string name="chartScreenHeader">График</string>
     <string name="ok">ОК</string>
     <string name="saveToFile">Сохранить в файл</string>
-    <string name="fileSavedSuccessfully">Файл записан в Галерею</string>
+    <string name="fileSavedSuccessfully">Файл успешно записан</string>
+    <string name="goToAppSettings">Открыть настройки</string>
+    <string name="rationaleText">Разрешение на запись отклонено. Чтобы установить разрешение,
+        перейдите к настройкам приложения</string>
 
     <!-- Errors -->
     <string name="emptyResultErrorText">Запрос выполнен успешно, но получено пустое значение</string>

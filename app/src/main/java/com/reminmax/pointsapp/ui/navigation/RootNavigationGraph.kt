@@ -53,7 +53,8 @@ fun RootNavigationGraph(
                 snackBarHostState = snackBarHostState,
                 onNavigateBack = {
                     navActions.navigateBack()
-                }
+                },
+                onGoToAppSettings = onGoToAppSettings,
             )
         }
     }
