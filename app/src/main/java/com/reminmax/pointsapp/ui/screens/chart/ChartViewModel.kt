@@ -1,9 +1,11 @@
 package com.reminmax.pointsapp.ui.screens.chart
 
 import androidx.lifecycle.SavedStateHandle
+import com.reminmax.pointsapp.R
 import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.domain.model.Point
 import com.reminmax.pointsapp.domain.model.UserMessage
+import com.reminmax.pointsapp.domain.resource_provider.IResourceProvider
 import com.reminmax.pointsapp.ui.base.BaseViewModel
 import com.reminmax.pointsapp.ui.navigation.NavigationParams
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,6 +20,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ChartViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    private val resourceProvider: IResourceProvider,
 ) : BaseViewModel() {
 
     private val _uiState = MutableStateFlow(ChartUiState())
@@ -59,7 +62,11 @@ class ChartViewModel @Inject constructor(
             }
 
             is ChartAction.ShowUserMessage -> {
-                onShowUserMessage(action.messageToShow)
+                onShowUserMessage(
+                    messageToShow = action.messageToShow,
+                    actionLabel = action.actionLabel ?: resourceProvider.getString(R.string.ok),
+                    onActionPerformed = action.onActionPerformed,
+                )
             }
 
             is ChartAction.UserMessageShown -> {
@@ -74,11 +81,17 @@ class ChartViewModel @Inject constructor(
         }
     }
 
-    private fun onShowUserMessage(messageToShow: String) {
+    private fun onShowUserMessage(
+        messageToShow: String,
+        actionLabel: String?,
+        onActionPerformed: () -> Unit,
+    ) {
         _userMessages.update {
             it + UserMessage(
                 id = UUID.randomUUID().mostSignificantBits,
-                message = messageToShow
+                message = messageToShow,
+                actionLabel = actionLabel,
+                onActionPerformed = onActionPerformed,
             )
         }
     }
