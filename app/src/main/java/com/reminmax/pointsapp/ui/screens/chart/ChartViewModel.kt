@@ -30,7 +30,7 @@ class ChartViewModel @Inject constructor(
     val userMessages: StateFlow<List<UserMessage>> = _userMessages.asStateFlow()
 
     // Примечание:
-    // Вопреки настятельной рекомендации Google не передавать сложные объекты в качестве
+    // Вопреки настоятельной рекомендации Google не передавать сложные объекты в качестве
     // параметров навигации (вместо этого передавать ключ для извлечения данных),
     // https://developer.android.com/jetpack/compose/navigation#retrieving-complex-data
     // данная реализация состоит в передаче списка точек в формате json в качестве параметра
