@@ -5,7 +5,6 @@ import com.reminmax.pointsapp.domain.validation.rules.IsInRangeValidationRule
 import com.reminmax.pointsapp.domain.validation.rules.IsIntegerValidationRule
 import com.reminmax.pointsapp.domain.validation.rules.NotEmptyValidationRule
 import com.reminmax.pointsapp.domain.validation.rules.OnlyNumbersValidationRule
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,16 +13,11 @@ import org.junit.runners.JUnit4
 @RunWith(JUnit4::class)
 class ValidatorTest {
 
-    private var validator: IValidator? = null
+    private lateinit var validator: IValidator
 
     @Before
     fun setup() {
         validator = Validator()
-    }
-
-    @After
-    fun tearDown() {
-        validator = null
     }
 
     // region NotEmptyValidationRule
@@ -32,7 +26,7 @@ class ValidatorTest {
         var result = true
         val targetValue = "10"
 
-        validator!!
+        validator
             .addValidationRules(
                 NotEmptyValidationRule("")
             )
@@ -49,7 +43,7 @@ class ValidatorTest {
         var result = true
         val targetValue = ""
 
-        validator!!
+        validator
             .addValidationRules(
                 NotEmptyValidationRule("")
             )
@@ -68,7 +62,7 @@ class ValidatorTest {
         var result = true
         val targetValue = "10"
 
-        validator!!
+        validator
             .addValidationRules(
                 OnlyNumbersValidationRule("")
             )
@@ -85,7 +79,7 @@ class ValidatorTest {
         var result = true
         val targetValue = "1d"
 
-        validator!!
+        validator
             .addValidationRules(
                 OnlyNumbersValidationRule("")
             )
@@ -104,7 +98,7 @@ class ValidatorTest {
         var result = true
         val targetValue = "10"
 
-        validator!!
+        validator
             .addValidationRules(
                 IsIntegerValidationRule("")
             )
@@ -121,7 +115,7 @@ class ValidatorTest {
         var result = true
         val targetValue = "10.0"
 
-        validator!!
+        validator
             .addValidationRules(
                 IsIntegerValidationRule("")
             )
@@ -142,7 +136,7 @@ class ValidatorTest {
         val startRange = 1
         val endRange = 11
 
-        validator!!
+        validator
             .addValidationRules(
                 IsInRangeValidationRule(
                     startRange = startRange,
@@ -165,7 +159,7 @@ class ValidatorTest {
         val startRange = 1
         val endRange = 11
 
-        validator!!
+        validator
             .addValidationRules(
                 IsInRangeValidationRule(
                     startRange = startRange,
