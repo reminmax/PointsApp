@@ -1,3 +1,31 @@
 <resources>
     <string name="app_name">PointsApp</string>
+
+    <string name="homeScreenInfo">Введите количество точек и нажмите кнопку Поехали</string>
+
+    <string name="enterPointCount">Введите количество точек</string>
+    <string name="clearTextField">Очистить поле ввода</string>
+    <string name="pointCountPlaceholder">10</string>
+    <string name="goButtonLabel">Поехали!</string>
+
+    <string name="goBack">Назад</string>
+    <string name="chartScreenHeader">График</string>
+    <string name="ok">ОК</string>
+    <string name="saveToFile">Сохранить в файл</string>
+    <string name="fileSavedSuccessfully">Файл успешно записан</string>
+    <string name="goToAppSettings">Открыть настройки</string>
+    <string name="rationaleText">Разрешение на запись отклонено. Чтобы установить разрешение,
+        перейдите к настройкам приложения</string>
+
+    <!-- Errors -->
+    <string name="emptyResultErrorText">Запрос выполнен успешно, но получено пустое значение</string>
+    <string name="valueCantBeEmptyError">Значение не может быть пустым</string>
+    <string name="shouldNotContainAnyAlphabetCharactersError">Допускается ввод только числовых символов</string>
+    <string name="valueOutOfRangeError">Допускается ввод только целых чисел от %1$d до %2$d</string>
+    <string name="onlyIntegerValuesAcceptedError">Допускается ввод только целых чисел</string>
+    <string name="noInternetConnection">Отсутствует интернет соединение</string>
+    <string name="anUnexpectedErrorOccurred">Произошла неизвестная ошибка</string>
+    <string name="captureCanvasToBitmapError">Ошибка захвата Canvas</string>
+    <string name="saveImageToMediaStoreError">Ошибка записи файла</string>
+
 </resources>
