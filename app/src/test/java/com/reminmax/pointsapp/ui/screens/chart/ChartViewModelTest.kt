@@ -3,6 +3,7 @@ package com.reminmax.pointsapp.ui.screens.chart
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
+import com.reminmax.pointsapp.data.fake.FakeAndroidResourceProvider
 import com.reminmax.pointsapp.domain.model.LinearChartStyle
 import com.reminmax.pointsapp.ui.navigation.NavigationParams
 import com.reminmax.pointsapp.util.CoroutineTestRule
@@ -22,6 +23,7 @@ class ChartViewModelTest {
     var coroutineTestRule = CoroutineTestRule()
 
     private lateinit var viewModel: ChartViewModel
+    private val resourceProvider = FakeAndroidResourceProvider()
 
     private val points = "[{\"x\": -3.93,\"y\": -14.00},{\"x\": -30.48,\"y\": 63.38}]"
     private val savedStateHandle: SavedStateHandle = SavedStateHandle().apply {
@@ -32,6 +34,7 @@ class ChartViewModelTest {
     fun setup() {
         viewModel = ChartViewModel(
             savedStateHandle = savedStateHandle,
+            resourceProvider = resourceProvider
         )
     }
 
